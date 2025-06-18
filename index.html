@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task 2 - Intermediate HTML, CSS, and JavaScript</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      display: grid;
+      grid-template-areas:
+        "nav nav"
+        "main aside";
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    nav {
+      grid-area: nav;
+      background: #00796b;
+      color: #fff;
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 1.3em;
+      margin-bottom: 10px;
+    }
+    main {
+      grid-area: main;
+    }
+    aside {
+      grid-area: aside;
+      background: #e0f2f1;
+      padding: 16px;
+      border-radius: 8px;
+    }
+    form {
+      background: #f4f4f4;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    form label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+    form input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    form button {
+      background: #00796b;
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+    form button:hover {
+      background: #004d40;
+    }
+    .todo-section {
+      background: #f4f4f4;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .todo-section input[type="text"] {
+      width: 70%;
+      padding: 8px;
+      margin-right: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .todo-section button {
+      padding: 8px 14px;
+      background: #00796b;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .todo-section ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 15px;
+    }
+    .todo-section li {
+      background: #e0f2f1;
+      margin-bottom: 8px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .todo-section li button {
+      background: #e57373;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 10px;
+      cursor: pointer;
+    }
+    @media (max-width: 700px) {
+      .container {
+        grid-template-areas:
+          "nav"
+          "main"
+          "aside";
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <main>
+      <h2>Contact Form</h2>
+      <form id="contactForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <button type="submit">Submit</button>
+      </form>
+      <div class="todo-section">
+        <h2>Dynamic To-Do List</h2>
+        <input id="taskInput" type="text" placeholder="New task">
+        <button type="button" onclick="addTask()">Add</button>
+        <ul id="taskList"></ul>
+      </div>
+    </main>
+  </div>
+  <script>
+    // Form Validation
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      const name = this.name.value.trim();
+      const email = this.email.value.trim();
+      if (!name) {
+        alert('Name is required.');
+        e.preventDefault();
+        return;
+      }
+      if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+        alert('Please enter a valid email address.');
+        e.preventDefault();
+      }
+    });
+
+    // Dynamic To-Do List
+    function addTask() {
+      const input = document.getElementById('taskInput');
+      const task = input.value.trim();
+      if (task) {
+        const li = document.createElement('li');
+        li.textContent = task;
+        const removeBtn = document.createElement('button');
+        removeBtn.textContent = 'Remove';
+        removeBtn.onclick = () => li.remove();
+        li.appendChild(removeBtn);
+        document.getElementById('taskList').appendChild(li);
+        input.value = '';
+      }
+    }
+  </script>
+</body>
+</html> 
