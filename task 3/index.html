@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Styling and JavaScript - Task 3</title>
+  <style>
+    :root {
+      --primary: #7f53ac;
+      --secondary: #647dee;
+      --tertiary: #43cea2;
+      --quaternary: #185a9d;
+      --background: #f3f7fa;
+      --card-bg: #fff;
+      --accent: #f8fafc;
+      --text: #222;
+      --shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 40%, var(--tertiary) 80%, var(--quaternary) 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 850px;
+      margin: 48px auto;
+      background: var(--card-bg);
+      padding: 32px 28px 28px 28px;
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(120deg, #f8fafc 60%, #e0e7ff 100%);
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 36px;
+      position: relative;
+    }
+    .header h1 {
+      color: var(--primary);
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+    .header::after {
+      content: '';
+      display: block;
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--tertiary));
+      margin: 16px auto 0 auto;
+      border-radius: 2px;
+    }
+    section {
+      margin-bottom: 36px;
+      background: linear-gradient(120deg, #f3f8ff 70%, #e0e7ff 100%);
+      border-radius: 12px;
+      padding: 22px 18px 18px 18px;
+      box-shadow: 0 2px 8px rgba(100,125,222,0.04);
+      transition: box-shadow 0.3s;
+    }
+    section:hover {
+      box-shadow: 0 6px 24px rgba(100,125,222,0.10);
+    }
+    h2 {
+      color: var(--primary);
+      margin-top: 0;
+      font-size: 1.35rem;
+    }
+    .api-section {
+      background: linear-gradient(120deg, #e0e7ff 70%, #c9fffa 100%);
+      border: 1.5px solid #b2ebf2;
+      box-shadow: 0 2px 12px rgba(100,125,222,0.07);
+      position: relative;
+    }
+    button {
+      background: linear-gradient(90deg, var(--primary), var(--tertiary));
+      color: #fff;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(100,125,222,0.10);
+      transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+      outline: none;
+      margin-bottom: 12px;
+    }
+    button:hover {
+      background: linear-gradient(90deg, var(--tertiary), var(--primary));
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 6px 18px rgba(100,125,222,0.18);
+    }
+    #joke {
+      min-height: 40px;
+      font-size: 1.1rem;
+      margin-top: 10px;
+      color: #333;
+      background: #fffde7;
+      border-radius: 8px;
+      padding: 12px 16px;
+      box-shadow: 0 1px 4px rgba(255,179,0,0.07);
+      opacity: 1;
+      transition: opacity 0.4s;
+    }
+    .loading-spinner {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      border: 3px solid #b2ebf2;
+      border-top: 3px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+      margin-left: 10px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    /* Responsive styles */
+    @media (max-width: 700px) {
+      .container {
+        padding: 12px 4vw 18px 4vw;
+      }
+      .header h1 {
+        font-size: 2rem;
+      }
+      section {
+        padding: 14px 6px 12px 6px;
+      }
+    }
+    @media (max-width: 480px) {
+      .container {
+        margin: 10px 0;
+        padding: 4px 2vw 8px 2vw;
+      }
+      .header h1 {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Advanced Styling and JavaScript</h1>
+    </div>
+    <section>
+      <h2>1. Responsive Design Demo</h2>
+      <p>Resize the browser window to see font and layout adjustments for mobile, tablet, and desktop.</p>
+    </section>
+    <section>
+      <h2>2. Interactive Quiz </h2>
+      <div id="interactive-section">
+        <!-- Interactive Quiz will be rendered here -->
+      </div>
+    </section>
+    <section class="api-section">
+      <h2>3. Fetch Data from an API</h2>
+      <button id="jokeBtn" onclick="fetchJoke()">Get a Random Joke</button>
+      <span id="spinner" style="display:none;"></span>
+      <p id="joke">Click the button to load a joke!</p>
+    </section>
+  </div>
+  <script>
+    function showSpinner(show) {
+      const spinner = document.getElementById('spinner');
+      if (show) {
+        spinner.innerHTML = '<span class="loading-spinner"></span>';
+      } else {
+        spinner.innerHTML = '';
+      }
+    }
+    function animateJoke(text) {
+      const jokeElem = document.getElementById('joke');
+      jokeElem.style.opacity = 0;
+      setTimeout(() => {
+        jokeElem.textContent = text;
+        jokeElem.style.opacity = 1;
+      }, 400);
+    }
+    function fetchJoke() {
+      showSpinner(true);
+      fetch('https://api.chucknorris.io/jokes/random')
+        .then(response => response.json())
+        .then(data => {
+          showSpinner(false);
+          animateJoke(data.value);
+        })
+        .catch(() => {
+          showSpinner(false);
+          animateJoke('Failed to fetch joke.');
+        });
+    }
+
+    // --- Interactive Quiz Logic ---
+    const quizData = [
+      {
+        question: "What does CSS stand for?",
+        options: [
+          "Computer Style Sheets",
+          "Creative Style System",
+          "Cascading Style Sheets",
+          "Colorful Style Syntax"
+        ],
+        answer: 2
+      },
+      {
+        question: "Which HTML tag is used to include JavaScript code?",
+        options: [
+          "<js>", "<javascript>", "<script>", "<code>"
+        ],
+        answer: 2
+      },
+      {
+        question: "Which property is used to change the background color in CSS?",
+        options: [
+          "color", "background-color", "bgcolor", "backgroundImage"
+        ],
+        answer: 1
+      },
+      {
+        question: "What does API stand for?",
+        options: [
+          "Application Programming Interface",
+          "Advanced Program Internet",
+          "Applied Protocol Interface",
+          "Array Processing Input"
+        ],
+        answer: 0
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let quizCompleted = false;
+
+    function renderQuiz() {
+      const quizDiv = document.getElementById('interactive-section');
+      if (quizCompleted) {
+        quizDiv.innerHTML = `
+          <div class="quiz-card">
+            <h3>Quiz Completed!</h3>
+            <p style="font-size:1.2rem;">Your Score: <b>${score}</b> / ${quizData.length}</p>
+            <button onclick="restartQuiz()">Restart Quiz</button>
+          </div>
+        `;
+        return;
+      }
+      const q = quizData[currentQuestion];
+      // Escape HTML special characters in options
+      function escapeHTML(str) {
+        return str.replace(/&/g, "&amp;")
+                  .replace(/</g, "&lt;")
+                  .replace(/>/g, "&gt;")
+                  .replace(/"/g, "&quot;")
+                  .replace(/'/g, "&#039;");
+      }
+      quizDiv.innerHTML = `
+        <div class="quiz-card">
+          <div class="quiz-q">${currentQuestion + 1}. ${q.question}</div>
+          <div class="quiz-options">
+            ${q.options.map((opt, i) => `
+              <button class="quiz-opt-btn" onclick="selectOption(${i})">${escapeHTML(opt)}</button>
+            `).join('')}
+          </div>
+          <div class="quiz-progress">Question ${currentQuestion + 1} of ${quizData.length}</div>
+        </div>
+      `;
+    }
+
+    function selectOption(selected) {
+      const q = quizData[currentQuestion];
+      const quizDiv = document.getElementById('interactive-section');
+      const isCorrect = selected === q.answer;
+      if (isCorrect) score++;
+      // Show feedback
+      const optionButtons = quizDiv.querySelectorAll('.quiz-opt-btn');
+      optionButtons.forEach((btn, idx) => {
+        btn.disabled = true;
+        if (idx === q.answer) btn.classList.add('correct');
+        if (idx === selected && !isCorrect) btn.classList.add('wrong');
+      });
+      setTimeout(() => {
+        currentQuestion++;
+        if (currentQuestion >= quizData.length) {
+          quizCompleted = true;
+        }
+        renderQuiz();
+      }, 900);
+    }
+
+    function restartQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      quizCompleted = false;
+      renderQuiz();
+    }
+
+    // Render quiz on page load
+    renderQuiz();
+
+    // Quiz styles
+    const quizStyle = document.createElement('style');
+    quizStyle.innerHTML = `
+      .quiz-card {
+        background: linear-gradient(120deg, #f3f8ff 70%, #e0e7ff 100%);
+        border-radius: 14px;
+        box-shadow: 0 2px 8px rgba(100,125,222,0.07);
+        padding: 24px 18px 18px 18px;
+        max-width: 420px;
+        margin: 0 auto;
+        text-align: center;
+        animation: quizFadeIn 0.5s;
+      }
+      .quiz-q {
+        font-size: 1.15rem;
+        margin-bottom: 18px;
+        color: #7f53ac;
+        font-weight: 600;
+      }
+      .quiz-options {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+      .quiz-opt-btn {
+        background: linear-gradient(90deg, #647dee, #43cea2);
+        color: #fff;
+        border: none;
+        border-radius: 22px;
+        padding: 10px 18px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.15s;
+        outline: none;
+      }
+      .quiz-opt-btn:hover:not(:disabled) {
+        background: linear-gradient(90deg, #43cea2, #647dee);
+        transform: scale(1.04);
+      }
+      .quiz-opt-btn.correct {
+        background: linear-gradient(90deg, #43cea2, #7f53ac);
+        color: #fff;
+      }
+      .quiz-opt-btn.wrong {
+        background: linear-gradient(90deg, #ff758c, #ff7eb3);
+        color: #fff;
+      }
+      .quiz-progress {
+        color: #888;
+        font-size: 0.98rem;
+        margin-top: 8px;
+      }
+      @keyframes quizFadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: none; }
+      }
+    `;
+    document.head.appendChild(quizStyle);
+  </script>
+</body>
+</html> 
